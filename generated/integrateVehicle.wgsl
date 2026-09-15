@@ -146,13 +146,12 @@ fn main(
     cw_tmp_3 = 35.0f;
   }
   v_fx = (v_fx - (v_u * cw_tmp_3));
-  var cw_tmp_4: f32;
   if (((cw_params.p_stabilityControl != 0u) && (v_ctrl.w < 0.1f))) {
-    cw_tmp_4 = ((v_vel.w * 450.0f) + ((v_u * abs(v_v)) * 15.0f));
-  } else {
-    cw_tmp_4 = 0.0f;
+    var v_targetYaw: f32 = cw_divide_f32((v_v * sin(v_ctrl.x)), max((cos(v_ctrl.x) * 2.68f), 0.5f));
+    var v_yawLimit: f32 = cw_divide_f32((v_par.y * 9.81f), max(abs(v_v), 3.5f));
+    v_targetYaw = f_cf(v_targetYaw, (-v_yawLimit), v_yawLimit, cw_thread, cw_block, cw_grid);
+    v_m = (v_m + f_cf((((v_targetYaw - v_vel.w) * 1800.0f) + ((v_u * abs(v_v)) * 100.0f)), (-6500.0f), 6500.0f, cw_thread, cw_block, cw_grid));
   }
-  v_m = (v_m - cw_tmp_4);
   var v_ax: f32 = cw_divide_f32(v_fx, 1490.0f);
   var v_az: f32 = cw_divide_f32(v_fz, 1490.0f);
   v_vel.x = (v_vel.x + (((v_cs * v_ax) + (v_sn * v_az)) * cw_params.p_dt));
@@ -200,13 +199,13 @@ fn main(
   }
   var v_pitch: f32 = f_cf(((-v_az) * 0.0035f), (-0.042f), 0.042f, cw_thread, cw_block, cw_grid);
   var v_roll: f32 = f_cf(((-v_ax) * 0.006f), (-0.064f), 0.064f, cw_thread, cw_block, cw_grid);
-  var cw_tmp_5: f32;
+  var cw_tmp_4: f32;
   if ((v_par.z > 0.5f)) {
-    cw_tmp_5 = 0.012f;
+    cw_tmp_4 = 0.012f;
   } else {
-    cw_tmp_5 = 0.0015f;
+    cw_tmp_4 = 0.0015f;
   }
-  var v_heave: f32 = ((cw_tmp_5 * sin(((v_p.z * 3.0f) + (v_p.x * 1.5f)))) * min((v_speed * 0.12f), 1.0f));
+  var v_heave: f32 = ((cw_tmp_4 * sin(((v_p.z * 3.0f) + (v_p.x * 1.5f)))) * min((v_speed * 0.12f), 1.0f));
   v_av.x = (v_av.x + ((((v_heave - v_att.x) * 120.0f) - (v_av.x * 16.0f)) * cw_params.p_dt));
   v_av.y = (v_av.y + ((((v_pitch - v_att.y) * 95.0f) - (v_av.y * 14.0f)) * cw_params.p_dt));
   v_av.z = (v_av.z + ((((v_roll - v_att.z) * 110.0f) - (v_av.z * 15.0f)) * cw_params.p_dt));
@@ -222,19 +221,19 @@ fn main(
   b_state[3i] = v_att;
   b_state[4i] = v_av;
   b_state[10i] = vec4<f32>(v_ax, v_az, v_speed, v_par.z);
-  var cw_tmp_6: f32;
+  var cw_tmp_5: f32;
   if ((abs(v_par.x) > (v_par.y * 7300.0f))) {
+    cw_tmp_5 = 1.0f;
+  } else {
+    cw_tmp_5 = 0.0f;
+  }
+  var cw_tmp_6: f32;
+  if ((v_ctrl.z > 0.5f)) {
     cw_tmp_6 = 1.0f;
   } else {
     cw_tmp_6 = 0.0f;
   }
-  var cw_tmp_7: f32;
-  if ((v_ctrl.z > 0.5f)) {
-    cw_tmp_7 = 1.0f;
-  } else {
-    cw_tmp_7 = 0.0f;
-  }
-  b_state[11i] = vec4<f32>(cw_tmp_6, cw_tmp_7, v_impact, max(max(v_a.w, v_b.w), max(v_c.w, v_d.w)));
+  b_state[11i] = vec4<f32>(cw_tmp_5, cw_tmp_6, v_impact, max(max(v_a.w, v_b.w), max(v_c.w, v_d.w)));
   var v_tick: u32 = u32(cw_divide_f32(v_att.w, cw_params.p_dt));
   {
     var v_w: u32 = 0u;
@@ -243,20 +242,20 @@ fn main(
       var v_slip: f32 = b_forces[v_w].w;
       if (((v_speed > 0.9f) && (v_slip > 0.2f))) {
         var v_slot: u32 = (((v_tick * 4u) + v_w) % cw_params.p_markCount);
-        var cw_tmp_8: f32;
+        var cw_tmp_7: f32;
         if (((v_w % 2u) == 0u)) {
-          cw_tmp_8 = (-0.852f);
+          cw_tmp_7 = (-0.852f);
         } else {
-          cw_tmp_8 = 0.852f;
+          cw_tmp_7 = 0.852f;
         }
-        var v_wx: f32 = cw_tmp_8;
-        var cw_tmp_9: f32;
+        var v_wx: f32 = cw_tmp_7;
+        var cw_tmp_8: f32;
         if ((v_w < 2u)) {
-          cw_tmp_9 = 1.34f;
+          cw_tmp_8 = 1.34f;
         } else {
-          cw_tmp_9 = (-1.34f);
+          cw_tmp_8 = (-1.34f);
         }
-        var v_wz: f32 = cw_tmp_9;
+        var v_wz: f32 = cw_tmp_8;
         b_marks[(v_slot * 2u)] = vec4<f32>(((v_p.x + (v_cs * v_wx)) + (v_sn * v_wz)), 0.017f, ((v_p.z - (v_sn * v_wx)) + (v_cs * v_wz)), f_cf((v_slip * 0.6f), 0.04f, 0.55f, cw_thread, cw_block, cw_grid));
         b_marks[((v_slot * 2u) + 1u)] = vec4<f32>(v_p.w, 0.245f, max((v_speed * cw_params.p_dt), 0.035f), v_att.w);
       }

@@ -188,7 +188,23 @@ fn main(
   v_ctrl.y = f_approach(v_ctrl.y, v_throttle, 3.2f, cw_params.p_dt, cw_thread, cw_block, cw_grid);
   v_ctrl.z = f_approach(v_ctrl.z, v_braking, 6.0f, cw_params.p_dt, cw_thread, cw_block, cw_grid);
   v_ctrl.w = cw_params.p_handbrake;
-  v_ctrl.x = f_approach(v_ctrl.x, cw_divide_f32((cw_params.p_steering * 0.5f), (1.0f + (v_speed * 0.024f))), cw_divide_f32(1.95f, (1.0f + (v_speed * 0.014f))), cw_params.p_dt, cw_thread, cw_block, cw_grid);
+  var v_rawLock: f32 = cw_divide_f32(0.5f, (1.0f + (v_speed * 0.024f)));
+  var cw_tmp_3: f32;
+  if ((v_off > 0.5f)) {
+    cw_tmp_3 = 0.52f;
+  } else {
+    cw_tmp_3 = 1.18f;
+  }
+  var v_cornerGrip: f32 = ((cw_tmp_3 * (1.0f - (cw_params.p_wetness * 0.34f))) * 9.81f);
+  var v_roadLock: f32 = atan2(((v_cornerGrip * 2.68f) * 0.85f), max((v_speed * v_speed), 1.0f));
+  var cw_tmp_4: f32;
+  if ((cw_params.p_handbrake > 0.1f)) {
+    cw_tmp_4 = v_rawLock;
+  } else {
+    cw_tmp_4 = min(v_rawLock, v_roadLock);
+  }
+  var v_lock: f32 = cw_tmp_4;
+  v_ctrl.x = f_approach(v_ctrl.x, (cw_params.p_steering * v_lock), cw_divide_f32(1.95f, (1.0f + (v_speed * 0.014f))), cw_params.p_dt, cw_thread, cw_block, cw_grid);
   v_engine.z = max(0.0f, (v_engine.z - cw_params.p_dt));
   var v_gr: f32 = f_ratio(v_gear, cw_thread, cw_block, cw_grid);
   var v_rpm: f32 = max(950.0f, (((cw_divide_f32(abs(v_v), 0.337f) * abs(v_gr)) * 3.35f) * 9.549297f));
@@ -211,35 +227,35 @@ fn main(
   v_gr = f_ratio(v_gear, cw_thread, cw_block, cw_grid);
   var v_rr: f32 = cw_divide_f32((v_rpm - 5600.0f), 3500.0f);
   var v_torque: f32 = (640.0f * (0.59f + (0.41f * exp(((-v_rr) * v_rr)))));
-  var cw_tmp_3: f32;
+  var cw_tmp_5: f32;
   if ((v_engine.z > 0.0f)) {
-    cw_tmp_3 = 0.16f;
+    cw_tmp_5 = 0.16f;
   } else {
-    cw_tmp_3 = 1.0f;
+    cw_tmp_5 = 1.0f;
   }
-  var cw_tmp_4: f32;
+  var cw_tmp_6: f32;
   if ((v_rpm > 8150.0f)) {
-    cw_tmp_4 = 0.15f;
+    cw_tmp_6 = 0.15f;
   } else {
-    cw_tmp_4 = 1.0f;
+    cw_tmp_6 = 1.0f;
   }
-  var v_demand: f32 = (((cw_divide_f32((((v_torque * v_gr) * 3.35f) * 0.9f), 0.337f) * v_ctrl.y) * cw_tmp_3) * cw_tmp_4);
+  var v_demand: f32 = (((cw_divide_f32((((v_torque * v_gr) * 3.35f) * 0.9f), 0.337f) * v_ctrl.y) * cw_tmp_5) * cw_tmp_6);
   v_engine.x = f_approach(v_engine.x, v_rpm, 9500.0f, cw_params.p_dt, cw_thread, cw_block, cw_grid);
   v_engine.y = f32(v_gear);
   b_state[2i] = v_engine;
   b_state[5i] = v_ctrl;
-  var cw_tmp_5: f32;
+  var cw_tmp_7: f32;
   if ((v_off > 0.5f)) {
-    cw_tmp_5 = 0.52f;
+    cw_tmp_7 = 0.52f;
   } else {
-    cw_tmp_5 = 1.18f;
+    cw_tmp_7 = 1.18f;
   }
-  var cw_tmp_6: f32;
+  var cw_tmp_8: f32;
   if ((cw_params.p_showroom != 0u)) {
-    cw_tmp_6 = 0.0f;
+    cw_tmp_8 = 0.0f;
   } else {
-    cw_tmp_6 = 1.0f;
+    cw_tmp_8 = 1.0f;
   }
-  b_state[12i] = vec4<f32>(v_demand, (cw_tmp_5 * (1.0f - (cw_params.p_wetness * 0.34f))), v_off, cw_tmp_6);
+  b_state[12i] = vec4<f32>(v_demand, (cw_tmp_7 * (1.0f - (cw_params.p_wetness * 0.34f))), v_off, cw_tmp_8);
   b_state[13i] = vec4<f32>(v_u, v_v, v_speed, v_vel.w);
 }

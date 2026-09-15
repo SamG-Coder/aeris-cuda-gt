@@ -1,0 +1,195 @@
+{
+  "kind": "Actual WebGPU kernel execution; not FPS measurements",
+  "device": {
+    "vendor": "nvidia",
+    "architecture": "blackwell",
+    "device": "",
+    "description": "",
+    "features": [
+      "core-features-and-limits",
+      "subgroup-size-control",
+      "float32-filterable",
+      "timestamp-query",
+      "subgroups"
+    ],
+    "timestampQuery": true,
+    "limits": {
+      "maxComputeInvocationsPerWorkgroup": 1024,
+      "maxComputeWorkgroupStorageSize": 16384,
+      "maxStorageBufferBindingSize": 268435456
+    }
+  },
+  "elapsedWallMs": 126.42500001192093,
+  "passed": 14,
+  "checks": [
+    {
+      "name": "Reset state finite and stationary",
+      "passed": true
+    },
+    {
+      "name": "CUDA throttle advances position",
+      "passed": true,
+      "detail": {
+        "speedMps": 8.67773151397705,
+        "z": 6.075972557067871
+      }
+    },
+    {
+      "name": "Engine speed and gear respond",
+      "passed": true
+    },
+    {
+      "name": "Driven wheels rotate",
+      "passed": true
+    },
+    {
+      "name": "Driving state remains finite",
+      "passed": true
+    },
+    {
+      "name": "Braking reduces speed",
+      "passed": true,
+      "detail": {
+        "speedMps": 1.465261459350586
+      }
+    },
+    {
+      "name": "Reverse gear and reverse motion",
+      "passed": true
+    },
+    {
+      "name": "KeyA turns toward driver left",
+      "passed": true,
+      "detail": {
+        "yaw": 0.33807653188705444,
+        "x": 230.3622283935547
+      }
+    },
+    {
+      "name": "KeyD turns toward driver right",
+      "passed": true,
+      "detail": {
+        "yaw": -0.33807653188705444,
+        "x": 227.6377716064453
+      }
+    },
+    {
+      "name": "90 km/h steering does not apply either brake",
+      "passed": true,
+      "detail": {
+        "brake": 0,
+        "handbrake": 0
+      }
+    },
+    {
+      "name": "90 km/h full steering retains momentum",
+      "passed": true,
+      "detail": {
+        "speedAfterKmh": 88.29529613610367,
+        "steerDegrees": 2.508212589419936
+      }
+    },
+    {
+      "name": "Stability assistance reduces a lateral slide",
+      "passed": true,
+      "detail": {
+        "unassistedRadians": 0.0028107500954556025,
+        "assistedRadians": 0.0009057412190278633
+      }
+    },
+    {
+      "name": "Animated GPU matrices finite and affine",
+      "passed": true
+    },
+    {
+      "name": "Body transform basis normalized",
+      "passed": true
+    }
+  ],
+  "results": [
+    {
+      "name": "Reset state finite and stationary",
+      "passed": true
+    },
+    {
+      "name": "CUDA throttle advances position",
+      "passed": true,
+      "detail": {
+        "speedMps": 8.67773151397705,
+        "z": 6.075972557067871
+      }
+    },
+    {
+      "name": "Engine speed and gear respond",
+      "passed": true
+    },
+    {
+      "name": "Driven wheels rotate",
+      "passed": true
+    },
+    {
+      "name": "Driving state remains finite",
+      "passed": true
+    },
+    {
+      "name": "Braking reduces speed",
+      "passed": true,
+      "detail": {
+        "speedMps": 1.465261459350586
+      }
+    },
+    {
+      "name": "Reverse gear and reverse motion",
+      "passed": true
+    },
+    {
+      "name": "KeyA turns toward driver left",
+      "passed": true,
+      "detail": {
+        "yaw": 0.33807653188705444,
+        "x": 230.3622283935547
+      }
+    },
+    {
+      "name": "KeyD turns toward driver right",
+      "passed": true,
+      "detail": {
+        "yaw": -0.33807653188705444,
+        "x": 227.6377716064453
+      }
+    },
+    {
+      "name": "90 km/h steering does not apply either brake",
+      "passed": true,
+      "detail": {
+        "brake": 0,
+        "handbrake": 0
+      }
+    },
+    {
+      "name": "90 km/h full steering retains momentum",
+      "passed": true,
+      "detail": {
+        "speedAfterKmh": 88.29529613610367,
+        "steerDegrees": 2.508212589419936
+      }
+    },
+    {
+      "name": "Stability assistance reduces a lateral slide",
+      "passed": true,
+      "detail": {
+        "unassistedRadians": 0.0028107500954556025,
+        "assistedRadians": 0.0009057412190278633
+      }
+    },
+    {
+      "name": "Animated GPU matrices finite and affine",
+      "passed": true
+    },
+    {
+      "name": "Body transform basis normalized",
+      "passed": true
+    }
+  ],
+  "failed": 0
+}

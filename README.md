@@ -317,3 +317,11 @@ was policy-blocked. The browser tests therefore inject the actual local HTML/CSS
 and input module into Chromium and exercise real keyboard events. They test
 layout and input handling, not a complete browser-WebGPU driving session.
 See `docs/VALIDATION.md` and `docs/validation.json` for the actual run results.
+
+## Frame pacing
+
+The driving renderer queues graphics without a second whole-GPU completion wait. Vehicle telemetry uses one reusable 256-byte staging buffer, with mapping as the synchronization point. HUD updates run at 10 Hz while lap timing and physics still advance each simulation frame. The FPS display includes the rolling 95th-percentile frame interval (p95); around 16.7 ms corresponds to 60 Hz pacing. High geometry, texture detail and shadow resolution remain unchanged.
+
+### High-speed steering
+
+Normal steering lock follows available road grip and speed, preventing a held digital steering key from demanding an impossible cornering force. It does not apply brakes or reduce throttle. Stability assistance corrects sideslip toward the direction of travel and follows a grip-limited yaw target. The handbrake retains the wider steering range for deliberate slides. Guided-tour speed behavior is unchanged.

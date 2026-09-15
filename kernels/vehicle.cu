@@ -19,7 +19,13 @@ __global__ void stepVehicle(float4* state,const float4* road,unsigned int roadCo
  if(drive>.01f){if(v<-.55f)braking=fmaxf(braking,drive);else{gear=gear<1?1:gear;throttle=drive;}}
  if(showroom!=0u){throttle=0.0f;braking=1.0f;}
  ctrl.y=approach(ctrl.y,throttle,3.2f,dt);ctrl.z=approach(ctrl.z,braking,6.0f,dt);ctrl.w=handbrake;
- ctrl.x=approach(ctrl.x,steering*.50f/(1.0f+speed*.024f),1.95f/(1.0f+speed*.014f),dt);
+ // Full digital steering used to demand several times the available tyre grip
+ // at speed, scrubbing away momentum. Limit lock, never throttle or brakes.
+ float rawLock=.50f/(1.0f+speed*.024f);
+ float cornerGrip=(off>.5f?.52f:1.18f)*(1.0f-wetness*.34f)*9.81f;
+ float roadLock=atan2f(cornerGrip*2.68f*.85f,fmaxf(speed*speed,1.0f));
+ float lock=handbrake>.1f?rawLock:fminf(rawLock,roadLock);
+ ctrl.x=approach(ctrl.x,steering*lock,1.95f/(1.0f+speed*.014f),dt);
  engine.z=fmaxf(0.0f,engine.z-dt);float gr=ratio(gear);
  float rpm=fmaxf(950.0f,fabsf(v)/.337f*fabsf(gr)*3.35f*9.549297f);
  rpm=fmaxf(rpm,950.0f+ctrl.y*1700.0f*(1.0f-cf(fabsf(v)/8.0f,0.0f,1.0f)));
@@ -57,7 +63,14 @@ __global__ void integrateVehicle(float4* state,const float4* forces,const float4
  float4 a=forces[0],b=forces[1],c=forces[2],d=forces[3];float fx=a.x+b.x+c.x+d.x,fz=a.y+b.y+c.y+d.y,m=a.z+b.z+c.z+d.z;
  float u=motion.x,v=motion.y,speed=motion.z,sn=sinf(p.w),cs=cosf(p.w);
  fz-=.39f*v*fabsf(v)+sg(v)*fminf(fabsf(v)*120.0f,220.0f)*(par.z>.5f?3.0f:1.0f);fz-=ctrl.y<.03f?v*28.0f:0.0f;fx-=u*(par.z>.5f?190.0f:35.0f);
- m-=(stabilityControl!=0u&&ctrl.w<.1f)?vel.w*450.0f+u*fabsf(v)*15.0f:0.0f;
+ // Align yaw with the steered path and damp sideslip. Positive local lateral
+ // velocity needs positive yaw correction, not the destabilizing opposite sign.
+ if(stabilityControl!=0u&&ctrl.w<.1f){
+  float targetYaw=v*sinf(ctrl.x)/fmaxf(cosf(ctrl.x)*2.68f,.5f);
+  float yawLimit=par.y*9.81f/fmaxf(fabsf(v),3.5f);
+  targetYaw=cf(targetYaw,-yawLimit,yawLimit);
+  m+=cf((targetYaw-vel.w)*1800.0f+u*fabsf(v)*100.0f,-6500.0f,6500.0f);
+ }
  float ax=fx/1490.0f,az=fz/1490.0f;
  vel.x+=(cs*ax+sn*az)*dt;vel.z+=(-sn*ax+cs*az)*dt;vel.w=cf(vel.w+m/2180.0f*dt,-2.7f,2.7f);
  if(par.w<.5f||(speed<.08f&&ctrl.y<.03f)){vel.x=0.0f;vel.z=0.0f;vel.w=0.0f;}

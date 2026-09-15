@@ -16,6 +16,15 @@ export class VehicleSimulation{
  bind(){this.b=bindDriving(this.kernels,{state:this.state.resource,road:this.road,obstacles:this.obstacles,forces:this.forces,marks:this.marks.resource,poses:this.poses.resource,smoke:this.smoke.resource,smokeVelocity:this.smokeVelocity},{roadCount:this.track.count,obstacleCount:this.track.obstacles.length/4,smokeCount:this.smokeCount,markCount:this.markCount});}
  reset(showroom=this.showroom){this.showroom=showroom;const p=showroom?{x:0,z:0,yaw:0}:this.track.spawn;this.runtime.batch().dispatch(this.b.init.setScalars(p),[Math.ceil(Math.max(this.markCount*2,this.smokeCount)/128)]).dispatch(this.b.pose,[1]).submit();this.time=0;this.steps=0;this.last.fill(0);this.last.set([p.x,.009,p.z,p.yaw]);this.last[8]=950;this.last[9]=1;}
  advance(input={},substeps=2){if(!Number.isInteger(substeps)||substeps<1||substeps>8)throw RangeError('1..8 fixed substeps');const v=validateInput(input),p=this.parameters;for(const k of ['automatic','tractionControl','stabilityControl'])if(![0,1].includes(p[k]))throw RangeError(k);if(!Number.isFinite(p.wetness)||p.wetness<0||p.wetness>1)throw RangeError('wetness');const batch=this.runtime.batch({label:'CUDA ordered four-contact dynamics'});recordDriving(batch,this.b,v,{...p,showroom:this.showroom?1:0},substeps);batch.dispatch(this.b.pose,[1]).dispatch(this.b.effects.setScalars({dt:substeps*FIXED_DT}),[Math.ceil(this.smokeCount/128)]).submit();this.time+=substeps*FIXED_DT;this.steps+=substeps;}
- async telemetry(){this.last=await this.runtime.read(this.state.resource,Float32Array);return this.last;}
- dispose(){for(const r of this.owned)this.runtime.destroyBuffer(r);for(const s of this.shared)s.dispose();this.owned=[];this.shared=[];}
+ async telemetry(){
+ // One reusable staging buffer; mapping provides the fence for this state copy.
+ const device=this.runtime.device;
+ this.telemetryBuffer??=device.createBuffer({label:'Vehicle telemetry staging',size:256,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});
+ const staging=this.telemetryBuffer,encoder=device.createCommandEncoder();
+ encoder.copyBufferToBuffer(this.state.resource.gpuBuffer,0,staging,0,256);device.queue.submit([encoder.finish()]);
+ await staging.mapAsync(GPUMapMode.READ);
+ try{this.last.set(new Float32Array(staging.getMappedRange()));this.runtime.stats.readbackBytes+=256;}finally{staging.unmap();}
+ return this.last;
+ }
+ dispose(){this.telemetryBuffer?.destroy();this.telemetryBuffer=null;for(const r of this.owned)this.runtime.destroyBuffer(r);for(const s of this.shared)s.dispose();this.owned=[];this.shared=[];}
 }
