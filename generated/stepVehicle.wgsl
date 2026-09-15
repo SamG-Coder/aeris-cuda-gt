@@ -193,10 +193,10 @@ fn main(
   if ((v_off > 0.5f)) {
     cw_tmp_3 = 0.52f;
   } else {
-    cw_tmp_3 = 1.18f;
+    cw_tmp_3 = 1.65f;
   }
   var v_cornerGrip: f32 = ((cw_tmp_3 * (1.0f - (cw_params.p_wetness * 0.34f))) * 9.81f);
-  var v_roadLock: f32 = atan2(((v_cornerGrip * 2.68f) * 0.85f), max((v_speed * v_speed), 1.0f));
+  var v_roadLock: f32 = max(0.1f, atan2(((v_cornerGrip * 2.68f) * 1.15f), max((v_speed * v_speed), 1.0f)));
   var cw_tmp_4: f32;
   if ((cw_params.p_handbrake > 0.1f)) {
     cw_tmp_4 = v_rawLock;
@@ -248,7 +248,7 @@ fn main(
   if ((v_off > 0.5f)) {
     cw_tmp_7 = 0.52f;
   } else {
-    cw_tmp_7 = 1.18f;
+    cw_tmp_7 = 1.65f;
   }
   var cw_tmp_8: f32;
   if ((cw_params.p_showroom != 0u)) {

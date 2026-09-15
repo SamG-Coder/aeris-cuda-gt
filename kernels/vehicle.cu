@@ -19,11 +19,11 @@ __global__ void stepVehicle(float4* state,const float4* road,unsigned int roadCo
  if(drive>.01f){if(v<-.55f)braking=fmaxf(braking,drive);else{gear=gear<1?1:gear;throttle=drive;}}
  if(showroom!=0u){throttle=0.0f;braking=1.0f;}
  ctrl.y=approach(ctrl.y,throttle,3.2f,dt);ctrl.z=approach(ctrl.z,braking,6.0f,dt);ctrl.w=handbrake;
- // Full digital steering used to demand several times the available tyre grip
- // at speed, scrubbing away momentum. Limit lock, never throttle or brakes.
+ // Preserve useful steering authority at speed; tyre forces and ESC manage
+ // saturation. A practical minimum lock avoids an unresponsive high-speed wheel.
  float rawLock=.50f/(1.0f+speed*.024f);
- float cornerGrip=(off>.5f?.52f:1.18f)*(1.0f-wetness*.34f)*9.81f;
- float roadLock=atan2f(cornerGrip*2.68f*.85f,fmaxf(speed*speed,1.0f));
+ float cornerGrip=(off>.5f?.52f:1.65f)*(1.0f-wetness*.34f)*9.81f;
+ float roadLock=fmaxf(.10f,atan2f(cornerGrip*2.68f*1.15f,fmaxf(speed*speed,1.0f)));
  float lock=handbrake>.1f?rawLock:fminf(rawLock,roadLock);
  ctrl.x=approach(ctrl.x,steering*lock,1.95f/(1.0f+speed*.014f),dt);
  engine.z=fmaxf(0.0f,engine.z-dt);float gr=ratio(gear);
@@ -34,7 +34,7 @@ __global__ void stepVehicle(float4* state,const float4* road,unsigned int roadCo
  gr=ratio(gear);float rr=(rpm-5600.0f)/3500.0f,torque=640.0f*(.59f+.41f*expf(-rr*rr));
  float demand=torque*gr*3.35f*.9f/.337f*ctrl.y*(engine.z>0.0f?.16f:1.0f)*(rpm>8150.0f?.15f:1.0f);
  engine.x=approach(engine.x,rpm,9500.0f,dt);engine.y=(float)gear;
- state[2]=engine;state[5]=ctrl;state[12]=make_float4(demand,(off>.5f?.52f:1.18f)*(1.0f-wetness*.34f),off,showroom!=0u?0.0f:1.0f);state[13]=make_float4(u,v,speed,vel.w);
+ state[2]=engine;state[5]=ctrl;state[12]=make_float4(demand,(off>.5f?.52f:1.65f)*(1.0f-wetness*.34f),off,showroom!=0u?0.0f:1.0f);state[13]=make_float4(u,v,speed,vel.w);
 }
 __global__ void tireForces(float4* state,float4* forces,float dt,unsigned int tractionControl){
  unsigned int w=threadIdx.x+blockIdx.x*blockDim.x;if(w>=4u)return;

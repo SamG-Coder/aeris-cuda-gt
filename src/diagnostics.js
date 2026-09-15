@@ -21,7 +21,10 @@ export async function runDeviceChecks(runtime,source){
   for(const [code,direction] of [['KeyA',1],['KeyD',-1]]){input.clear();input.key({code,target:{tagName:'CANVAS'},preventDefault(){}},true);reset();await drive(180,{drive:1,steering:input.sample([]).steering*.35});a=await read();record(code+' turns toward driver '+(direction===1?'left':'right'),a[3]*direction>.01&&(a[0]-t.spawn.x)*direction>.05,{yaw:a[3],x:a[0]});}input.dispose();
   reset();const cruising=await read();cruising[6]=25;runtime.device.queue.writeBuffer(r.state.gpuBuffer,0,cruising);await drive(60,{steering:1});const corner=await read();
   record('90 km/h steering does not apply either brake',corner[22]===0&&corner[23]===0,{brake:corner[22],handbrake:corner[23]});
+  record('90 km/h steering has useful authority',Math.abs(corner[20])>.095&&Math.abs(corner[3])>.15,{steerDegrees:corner[20]*180/Math.PI,headingDegrees:corner[3]*180/Math.PI});
   record('90 km/h full steering retains momentum',Math.hypot(corner[4],corner[6])>22,{speedAfterKmh:Math.hypot(corner[4],corner[6])*3.6,steerDegrees:corner[20]*180/Math.PI});
+  reset();const fastCruise=await read();fastCruise[6]=50;runtime.device.queue.writeBuffer(r.state.gpuBuffer,0,fastCruise);await drive(60,{steering:1});const fastCorner=await read();
+  record('180 km/h steering remains responsive without braking',Math.abs(fastCorner[20])>.095&&Math.abs(fastCorner[3])>.07&&Math.hypot(fastCorner[4],fastCorner[6])>44&&fastCorner[22]===0&&fastCorner[23]===0,{headingDegrees:fastCorner[3]*180/Math.PI,speedAfterKmh:Math.hypot(fastCorner[4],fastCorner[6])*3.6});
   const slip=[];
   for(const assist of [0,1]){reset();const initial=await read();initial[4]=3;initial[6]=12;runtime.device.queue.writeBuffer(r.state.gpuBuffer,0,initial);await drive(60,{},assist);const v=await read(),u=Math.cos(v[3])*v[4]-Math.sin(v[3])*v[6],forward=Math.sin(v[3])*v[4]+Math.cos(v[3])*v[6];slip.push(Math.abs(Math.atan2(u,forward)));}
   record('Stability assistance reduces a lateral slide',slip[1]<slip[0],{unassistedRadians:slip[0],assistedRadians:slip[1]});

@@ -9,8 +9,8 @@
       "core-features-and-limits",
       "subgroup-size-control",
       "float32-filterable",
-      "timestamp-query",
-      "subgroups"
+      "subgroups",
+      "timestamp-query"
     ],
     "timestampQuery": true,
     "limits": {
@@ -19,8 +19,8 @@
       "maxStorageBufferBindingSize": 268435456
     }
   },
-  "elapsedWallMs": 126.42500001192093,
-  "passed": 14,
+  "elapsedWallMs": 162.44999998807907,
+  "passed": 16,
   "checks": [
     {
       "name": "Reset state finite and stationary",
@@ -30,8 +30,8 @@
       "name": "CUDA throttle advances position",
       "passed": true,
       "detail": {
-        "speedMps": 8.67773151397705,
-        "z": 6.075972557067871
+        "speedMps": 11.876869201660156,
+        "z": 7.92165994644165
       }
     },
     {
@@ -50,7 +50,7 @@
       "name": "Braking reduces speed",
       "passed": true,
       "detail": {
-        "speedMps": 1.465261459350586
+        "speedMps": 1.4903076887130737
       }
     },
     {
@@ -61,16 +61,16 @@
       "name": "KeyA turns toward driver left",
       "passed": true,
       "detail": {
-        "yaw": 0.33807653188705444,
-        "x": 230.3622283935547
+        "yaw": 0.41552725434303284,
+        "x": 230.95089721679688
       }
     },
     {
       "name": "KeyD turns toward driver right",
       "passed": true,
       "detail": {
-        "yaw": -0.33807653188705444,
-        "x": 227.6377716064453
+        "yaw": -0.41552725434303284,
+        "x": 227.04910278320312
       }
     },
     {
@@ -82,19 +82,35 @@
       }
     },
     {
+      "name": "90 km/h steering has useful authority",
+      "passed": true,
+      "detail": {
+        "steerDegrees": 5.729578036685597,
+        "headingDegrees": 13.103022950921414
+      }
+    },
+    {
       "name": "90 km/h full steering retains momentum",
       "passed": true,
       "detail": {
-        "speedAfterKmh": 88.29529613610367,
-        "steerDegrees": 2.508212589419936
+        "speedAfterKmh": 87.22986685272593,
+        "steerDegrees": 5.729578036685597
+      }
+    },
+    {
+      "name": "180 km/h steering remains responsive without braking",
+      "passed": true,
+      "detail": {
+        "headingDegrees": 9.801435864636895,
+        "speedAfterKmh": 175.07159720851317
       }
     },
     {
       "name": "Stability assistance reduces a lateral slide",
       "passed": true,
       "detail": {
-        "unassistedRadians": 0.0028107500954556025,
-        "assistedRadians": 0.0009057412190278633
+        "unassistedRadians": 0.0017420137281417532,
+        "assistedRadians": 0.0006335665324609742
       }
     },
     {
@@ -115,8 +131,8 @@
       "name": "CUDA throttle advances position",
       "passed": true,
       "detail": {
-        "speedMps": 8.67773151397705,
-        "z": 6.075972557067871
+        "speedMps": 11.876869201660156,
+        "z": 7.92165994644165
       }
     },
     {
@@ -135,7 +151,7 @@
       "name": "Braking reduces speed",
       "passed": true,
       "detail": {
-        "speedMps": 1.465261459350586
+        "speedMps": 1.4903076887130737
       }
     },
     {
@@ -146,16 +162,16 @@
       "name": "KeyA turns toward driver left",
       "passed": true,
       "detail": {
-        "yaw": 0.33807653188705444,
-        "x": 230.3622283935547
+        "yaw": 0.41552725434303284,
+        "x": 230.95089721679688
       }
     },
     {
       "name": "KeyD turns toward driver right",
       "passed": true,
       "detail": {
-        "yaw": -0.33807653188705444,
-        "x": 227.6377716064453
+        "yaw": -0.41552725434303284,
+        "x": 227.04910278320312
       }
     },
     {
@@ -167,19 +183,35 @@
       }
     },
     {
+      "name": "90 km/h steering has useful authority",
+      "passed": true,
+      "detail": {
+        "steerDegrees": 5.729578036685597,
+        "headingDegrees": 13.103022950921414
+      }
+    },
+    {
       "name": "90 km/h full steering retains momentum",
       "passed": true,
       "detail": {
-        "speedAfterKmh": 88.29529613610367,
-        "steerDegrees": 2.508212589419936
+        "speedAfterKmh": 87.22986685272593,
+        "steerDegrees": 5.729578036685597
+      }
+    },
+    {
+      "name": "180 km/h steering remains responsive without braking",
+      "passed": true,
+      "detail": {
+        "headingDegrees": 9.801435864636895,
+        "speedAfterKmh": 175.07159720851317
       }
     },
     {
       "name": "Stability assistance reduces a lateral slide",
       "passed": true,
       "detail": {
-        "unassistedRadians": 0.0028107500954556025,
-        "assistedRadians": 0.0009057412190278633
+        "unassistedRadians": 0.0017420137281417532,
+        "assistedRadians": 0.0006335665324609742
       }
     },
     {
