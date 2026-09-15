@@ -322,6 +322,8 @@ See `docs/VALIDATION.md` and `docs/validation.json` for the actual run results.
 
 The driving renderer queues graphics without a second whole-GPU completion wait. Vehicle telemetry uses one reusable 256-byte staging buffer, with mapping as the synchronization point. HUD updates run at 10 Hz while lap timing and physics still advance each simulation frame. The FPS display includes the rolling 95th-percentile frame interval (p95); around 16.7 ms corresponds to 60 Hz pacing. High geometry, texture detail and shadow resolution remain unchanged.
 
-### High-speed steering
+### Tyre contact model
 
-Normal steering lock follows available road grip and speed, preventing a held digital steering key from demanding an impossible cornering force. It does not apply brakes or reduce throttle. Stability assistance corrects sideslip toward the direction of travel and follows a grip-limited yaw target. The handbrake retains the wider steering range for deliberate slides. Guided-tour speed behavior is unchanged.
+Each wheel classifies asphalt or shoulder at its own footprint. A pneumatic brush approximation derives contact-patch length from vertical load, tread width and a nominal 240 kPa pressure. Tread deflection builds over a relaxation length; a progressive adhesion-to-sliding force curve replaces the old hard-clipped linear response. Driving and braking consume part of the same friction budget as cornering. Smoke and skid marks respond to sliding rather than ordinary elastic cornering deflection.
+
+The experimental extra steering caps and inflated dry-road grip have been removed. This remains a flat-road, reduced vehicle model with approximate tyre parameters, not a measured tyre or a full deformable-mesh/suspension simulation.

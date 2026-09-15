@@ -14,18 +14,20 @@ __global__ void stepVehicle(float4* state,const float4* road,unsigned int roadCo
  float4 p=state[0],vel=state[1],engine=state[2],ctrl=state[5];
  float sn=sinf(p.w),cs=cosf(p.w),u=cs*vel.x-sn*vel.z,v=sn*vel.x+cs*vel.z,speed=sqrtf(u*u+v*v);
  float off=roadDist(road,roadCount,p.x,p.z)>7.4f?1.0f:0.0f;
+ // Classify each footprint at its wheel location, not at the chassis centre.
+ float4 surface=make_float4(0.0f,0.0f,0.0f,0.0f);
+ for(unsigned int w=0u;w<4u;w++){
+  float wx=w%2u==0u?-.852f:.852f,wz=w<2u?1.34f:-1.34f;
+  float mu=(roadDist(road,roadCount,p.x+cs*wx+sn*wz,p.z-sn*wx+cs*wz)>7.4f?.52f:1.18f)*(1.0f-wetness*.34f);
+  if(w==0u)surface.x=mu;if(w==1u)surface.y=mu;if(w==2u)surface.z=mu;if(w==3u)surface.w=mu;
+ }
+ state[14]=surface;
  int gear=(int)engine.y;float throttle=0.0f,braking=brake;
  if(drive<-.01f){if(v>.55f)braking=fmaxf(braking,-drive);else{gear=-1;throttle=-drive;}}
  if(drive>.01f){if(v<-.55f)braking=fmaxf(braking,drive);else{gear=gear<1?1:gear;throttle=drive;}}
  if(showroom!=0u){throttle=0.0f;braking=1.0f;}
  ctrl.y=approach(ctrl.y,throttle,3.2f,dt);ctrl.z=approach(ctrl.z,braking,6.0f,dt);ctrl.w=handbrake;
- // Preserve useful steering authority at speed; tyre forces and ESC manage
- // saturation. A practical minimum lock avoids an unresponsive high-speed wheel.
- float rawLock=.50f/(1.0f+speed*.024f);
- float cornerGrip=(off>.5f?.52f:1.65f)*(1.0f-wetness*.34f)*9.81f;
- float roadLock=fmaxf(.10f,atan2f(cornerGrip*2.68f*1.15f,fmaxf(speed*speed,1.0f)));
- float lock=handbrake>.1f?rawLock:fminf(rawLock,roadLock);
- ctrl.x=approach(ctrl.x,steering*lock,1.95f/(1.0f+speed*.014f),dt);
+ ctrl.x=approach(ctrl.x,steering*.50f/(1.0f+speed*.024f),1.95f/(1.0f+speed*.014f),dt);
  engine.z=fmaxf(0.0f,engine.z-dt);float gr=ratio(gear);
  float rpm=fmaxf(950.0f,fabsf(v)/.337f*fabsf(gr)*3.35f*9.549297f);
  rpm=fmaxf(rpm,950.0f+ctrl.y*1700.0f*(1.0f-cf(fabsf(v)/8.0f,0.0f,1.0f)));
@@ -34,7 +36,7 @@ __global__ void stepVehicle(float4* state,const float4* road,unsigned int roadCo
  gr=ratio(gear);float rr=(rpm-5600.0f)/3500.0f,torque=640.0f*(.59f+.41f*expf(-rr*rr));
  float demand=torque*gr*3.35f*.9f/.337f*ctrl.y*(engine.z>0.0f?.16f:1.0f)*(rpm>8150.0f?.15f:1.0f);
  engine.x=approach(engine.x,rpm,9500.0f,dt);engine.y=(float)gear;
- state[2]=engine;state[5]=ctrl;state[12]=make_float4(demand,(off>.5f?.52f:1.65f)*(1.0f-wetness*.34f),off,showroom!=0u?0.0f:1.0f);state[13]=make_float4(u,v,speed,vel.w);
+ state[2]=engine;state[5]=ctrl;state[12]=make_float4(demand,(off>.5f?.52f:1.18f)*(1.0f-wetness*.34f),off,showroom!=0u?0.0f:1.0f);state[13]=make_float4(u,v,speed,vel.w);
 }
 __global__ void tireForces(float4* state,float4* forces,float dt,unsigned int tractionControl){
  unsigned int w=threadIdx.x+blockIdx.x*blockDim.x;if(w>=4u)return;
@@ -44,17 +46,37 @@ __global__ void tireForces(float4* state,float4* forces,float dt,unsigned int tr
  float tl=lat*cs-lon*sn,tv=lat*sn+lon*cs;
  float load=1490.0f*9.81f*.25f-(w<2u?1.0f:-1.0f)*1490.0f*old.y*.42f/5.36f-(wx<0.0f?-1.0f:1.0f)*1490.0f*old.x*.42f/3.408f;
  load=cf(load,1490.0f*9.81f*.09f,1490.0f*9.81f*.46f)+.28f*motion.z*motion.z;
- float grip=par.y*load,alpha=atan2f(tl,fmaxf(fabsf(tv),3.5f));
- float lateral=-40000.0f*alpha*(w<2u?1.0f:1.12f)*(w<2u?1.0f:1.0f-ctrl.w*.78f);
+ // Pneumatic brush contact: load determines contact area and stiffness.
+ // Lateral tread deflection builds over a relaxation length before sliding.
+ float width=w<2u?.24f:.282f,pressure=240000.0f;
+ float patchLength=load/(pressure*width);
+ float relaxation=fmaxf(.12f,patchLength*3.0f);
+ float4 surface=state[14];float mu=w==0u?surface.x:w==1u?surface.y:w==2u?surface.z:surface.w;
+ float grip=mu*load,alpha=atan2f(tl,fmaxf(fabsf(tv),1.0f));
+ float4 wheel=state[6u+w];
+ float tangent=tl/fmaxf(fabsf(tv),1.0f);
+ wheel.w+=(tangent-wheel.w)*(1.0f-expf(-fmaxf(fabsf(tv),1.0f)*dt/relaxation));
+ float stiffness=40000.0f*powf(load/(1490.0f*9.81f*.25f),.85f);
  float longitudinal=w>=2u?par.x*.5f:0.0f;
  float braking=fminf(fabsf(tv)*1490.0f/(4.0f*dt),ctrl.z*grip*.96f+(w>=2u?ctrl.w*grip*1.1f:0.0f));longitudinal-=sg(tv)*braking;
- float requested=sqrtf(lateral*lateral+longitudinal*longitudinal),slip=fmaxf(0.0f,requested/fmaxf(grip,1.0f)-1.0f);
+ // Reserve the remaining friction for lateral contact rather than scaling
+ // both forces by an unbounded linear lateral demand.
+ float driveSlip=fmaxf(0.0f,fabsf(longitudinal)/fmaxf(grip,1.0f)-1.0f);
  if(tractionControl!=0u&&w>=2u&&ctrl.y>.1f)longitudinal=cf(longitudinal,-grip*.92f,grip*.92f);
- float amount=sqrtf(lateral*lateral+longitudinal*longitudinal),limit=fminf(1.0f,grip/fmaxf(amount,1.0f));lateral*=limit;longitudinal*=limit;
+ longitudinal=cf(longitudinal,-grip,grip);
+ float capacity=sqrtf(fmaxf(0.0f,grip*grip-longitudinal*longitudinal));
+ if(w>=2u)capacity*=1.0f-ctrl.w*.78f;
+ float deformation=wheel.w,threshold=3.0f*capacity/fmaxf(stiffness,1.0f),lateral=0.0f;
+ if(capacity>1.0f){
+  if(fabsf(deformation)<threshold){float q=deformation/threshold;lateral=-capacity*(3.0f*q-3.0f*fabsf(q)*q+q*q*q);}
+  else lateral=-sg(deformation)*capacity;
+ }
+ float slide=cf((fabsf(deformation)-threshold)/fmaxf(fabsf(deformation),.001f),0.0f,1.0f);
+ float slip=fmaxf(driveSlip,slide);
  float fx=lateral*cs+longitudinal*sn,fz=-lateral*sn+longitudinal*cs;
- float4 wheel=state[6u+w];float target=tv/.337f;
+ float target=tv/.337f;
  if(w>=2u){target+=(tractionControl!=0u?fminf(slip,.12f):fminf(slip,1.4f))*ctrl.y*sg(par.x)*28.0f;target*=1.0f-ctrl.w*.93f;}
- wheel.y=approach(wheel.y,target,230.0f,dt)*par.w;wheel.x+=wheel.y*dt;wheel.x-=floorf(wheel.x/(2.0f*PI))*2.0f*PI;wheel.z=cf(fabsf(tl)*.13f+slip*.18f,0.0f,1.0f);wheel.w=alpha;
+ wheel.y=approach(wheel.y,target,230.0f,dt)*par.w;wheel.x+=wheel.y*dt;wheel.x-=floorf(wheel.x/(2.0f*PI))*2.0f*PI;wheel.z=cf(slip,0.0f,1.0f);
  state[6u+w]=wheel;forces[w]=make_float4(fx,fz,wz*fx-wx*fz,wheel.z);
 }
 __global__ void integrateVehicle(float4* state,const float4* forces,const float4* obstacles,float4* marks,unsigned int obstacleCount,unsigned int markCount,float dt,unsigned int stabilityControl){
@@ -63,14 +85,8 @@ __global__ void integrateVehicle(float4* state,const float4* forces,const float4
  float4 a=forces[0],b=forces[1],c=forces[2],d=forces[3];float fx=a.x+b.x+c.x+d.x,fz=a.y+b.y+c.y+d.y,m=a.z+b.z+c.z+d.z;
  float u=motion.x,v=motion.y,speed=motion.z,sn=sinf(p.w),cs=cosf(p.w);
  fz-=.39f*v*fabsf(v)+sg(v)*fminf(fabsf(v)*120.0f,220.0f)*(par.z>.5f?3.0f:1.0f);fz-=ctrl.y<.03f?v*28.0f:0.0f;fx-=u*(par.z>.5f?190.0f:35.0f);
- // Align yaw with the steered path and damp sideslip. Positive local lateral
- // velocity needs positive yaw correction, not the destabilizing opposite sign.
- if(stabilityControl!=0u&&ctrl.w<.1f){
-  float targetYaw=v*sinf(ctrl.x)/fmaxf(cosf(ctrl.x)*2.68f,.5f);
-  float yawLimit=par.y*9.81f/fmaxf(fabsf(v),3.5f);
-  targetYaw=cf(targetYaw,-yawLimit,yawLimit);
-  m+=cf((targetYaw-vel.w)*1800.0f+u*fabsf(v)*100.0f,-6500.0f,6500.0f);
- }
+ // Optional yaw damping; no target-heading or speed-based steering cap.
+ if(stabilityControl!=0u&&ctrl.w<.1f)m-=vel.w*450.0f-u*fabsf(v)*15.0f;
  float ax=fx/1490.0f,az=fz/1490.0f;
  vel.x+=(cs*ax+sn*az)*dt;vel.z+=(-sn*ax+cs*az)*dt;vel.w=cf(vel.w+m/2180.0f*dt,-2.7f,2.7f);
  if(par.w<.5f||(speed<.08f&&ctrl.y<.03f)){vel.x=0.0f;vel.z=0.0f;vel.w=0.0f;}

@@ -147,10 +147,7 @@ fn main(
   }
   v_fx = (v_fx - (v_u * cw_tmp_3));
   if (((cw_params.p_stabilityControl != 0u) && (v_ctrl.w < 0.1f))) {
-    var v_targetYaw: f32 = cw_divide_f32((v_v * sin(v_ctrl.x)), max((cos(v_ctrl.x) * 2.68f), 0.5f));
-    var v_yawLimit: f32 = cw_divide_f32((v_par.y * 9.81f), max(abs(v_v), 3.5f));
-    v_targetYaw = f_cf(v_targetYaw, (-v_yawLimit), v_yawLimit, cw_thread, cw_block, cw_grid);
-    v_m = (v_m + f_cf((((v_targetYaw - v_vel.w) * 1800.0f) + ((v_u * abs(v_v)) * 100.0f)), (-6500.0f), 6500.0f, cw_thread, cw_block, cw_grid));
+    v_m = (v_m - ((v_vel.w * 450.0f) - ((v_u * abs(v_v)) * 15.0f)));
   }
   var v_ax: f32 = cw_divide_f32(v_fx, 1490.0f);
   var v_az: f32 = cw_divide_f32(v_fz, 1490.0f);

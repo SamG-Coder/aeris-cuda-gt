@@ -21,3 +21,9 @@ test('Gamepad triggers, steering and handbrake',()=>{const {input}=harness(),but
 test('Manual shift consumed once',()=>{const {input}=harness();input.key(key('KeyE'),true);assert.equal(input.sample().shift,1);assert.equal(input.sample().shift,0);});
 test('Cleanup removes window listeners',()=>{const {input,listeners}=harness();input.dispose();assert.deepEqual(listeners,{});});
 test('CPU CUDA oracle generates the CAD descriptor count',()=>{const c=compile(source.car,{entry:'describeCar',workgroupSize:[1,1,1]}),parts=new Float32Array(512*40),count=new Uint32Array(1);executeCPU(c,{parts,count},{},[1]);assert.ok(count[0]>200&&count[0]<512);assert.ok(parts.every(Number.isFinite));});
+
+const tyreKernel=compile(source.vehicle,{entry:'tireForces',workgroupSize:[4,1,1]});
+function tyreContact({lateral=0,speed=25,steering=0,brake=0,handbrake=0}={}){const state=new Float32Array(64),forces=new Float32Array(16);state.set([steering,0,brake,handbrake],20);state.set([0,1.18,0,1],48);state.set([lateral,speed,Math.hypot(lateral,speed),0],52);state.set([1.18,1.18,1.18,1.18],56);executeCPU(tyreKernel,{state,forces},{dt:1/120,tractionControl:1},[1]);return {state,forces};}
+test('Freely rolling tyre contact produces no brake or lateral force',()=>{const {state,forces}=tyreContact();assert.ok(forces.every(x=>Math.abs(x)<1e-6));assert.equal(state[22],0);assert.equal(state[23],0);});
+test('Adhering contact builds cornering force without false skid effects',()=>{const {state,forces}=tyreContact({steering:.02});assert.ok(forces[0]>0);assert.ok(state[27]<0&&Math.abs(state[27])<Math.tan(.02));assert.equal(state[26],0);});
+test('Tyre contact opposes actual lateral sliding',()=>{const {forces}=tyreContact({lateral:5});for(let i=0;i<4;i++)assert.ok(forces[i*4]<0);assert.ok(forces.every(Number.isFinite));});
