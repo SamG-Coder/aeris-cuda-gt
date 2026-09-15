@@ -1,0 +1,147 @@
+{
+  "kind": "Actual WebGPU kernel execution; not FPS measurements",
+  "device": {
+    "vendor": "nvidia",
+    "architecture": "blackwell",
+    "device": "",
+    "description": "",
+    "features": [
+      "core-features-and-limits",
+      "subgroup-size-control",
+      "float32-filterable",
+      "timestamp-query",
+      "subgroups"
+    ],
+    "timestampQuery": true,
+    "limits": {
+      "maxComputeInvocationsPerWorkgroup": 1024,
+      "maxComputeWorkgroupStorageSize": 16384,
+      "maxStorageBufferBindingSize": 268435456
+    }
+  },
+  "elapsedWallMs": 118.45500004291534,
+  "passed": 11,
+  "checks": [
+    {
+      "name": "Reset state finite and stationary",
+      "passed": true
+    },
+    {
+      "name": "CUDA throttle advances position",
+      "passed": true,
+      "detail": {
+        "speedMps": 8.67773151397705,
+        "z": 6.075972557067871
+      }
+    },
+    {
+      "name": "Engine speed and gear respond",
+      "passed": true
+    },
+    {
+      "name": "Driven wheels rotate",
+      "passed": true
+    },
+    {
+      "name": "Driving state remains finite",
+      "passed": true
+    },
+    {
+      "name": "Braking reduces speed",
+      "passed": true,
+      "detail": {
+        "speedMps": 1.465261459350586
+      }
+    },
+    {
+      "name": "Reverse gear and reverse motion",
+      "passed": true
+    },
+    {
+      "name": "KeyA turns toward driver left",
+      "passed": true,
+      "detail": {
+        "yaw": 0.3341616690158844,
+        "x": 230.3488006591797
+      }
+    },
+    {
+      "name": "KeyD turns toward driver right",
+      "passed": true,
+      "detail": {
+        "yaw": -0.3341616690158844,
+        "x": 227.6511993408203
+      }
+    },
+    {
+      "name": "Animated GPU matrices finite and affine",
+      "passed": true
+    },
+    {
+      "name": "Body transform basis normalized",
+      "passed": true
+    }
+  ],
+  "results": [
+    {
+      "name": "Reset state finite and stationary",
+      "passed": true
+    },
+    {
+      "name": "CUDA throttle advances position",
+      "passed": true,
+      "detail": {
+        "speedMps": 8.67773151397705,
+        "z": 6.075972557067871
+      }
+    },
+    {
+      "name": "Engine speed and gear respond",
+      "passed": true
+    },
+    {
+      "name": "Driven wheels rotate",
+      "passed": true
+    },
+    {
+      "name": "Driving state remains finite",
+      "passed": true
+    },
+    {
+      "name": "Braking reduces speed",
+      "passed": true,
+      "detail": {
+        "speedMps": 1.465261459350586
+      }
+    },
+    {
+      "name": "Reverse gear and reverse motion",
+      "passed": true
+    },
+    {
+      "name": "KeyA turns toward driver left",
+      "passed": true,
+      "detail": {
+        "yaw": 0.3341616690158844,
+        "x": 230.3488006591797
+      }
+    },
+    {
+      "name": "KeyD turns toward driver right",
+      "passed": true,
+      "detail": {
+        "yaw": -0.3341616690158844,
+        "x": 227.6511993408203
+      }
+    },
+    {
+      "name": "Animated GPU matrices finite and affine",
+      "passed": true
+    },
+    {
+      "name": "Body transform basis normalized",
+      "passed": true
+    }
+  ],
+  "failed": 0
+}

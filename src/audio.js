@@ -1,0 +1,7 @@
+export class EngineAudio{
+ constructor(){this.muted=false;this.context=null;this.osc=[];}
+ async start(){if(this.context){await this.context.resume();return;}const C=globalThis.AudioContext||globalThis.webkitAudioContext;if(!C)return;const a=this.context=new C(),master=this.master=a.createGain();master.gain.value=.0;master.connect(a.destination);const low=a.createBiquadFilter();low.type='lowpass';low.frequency.value=1200;low.Q.value=.6;low.connect(master);for(const [m,g,type]of [[1,.075,'sawtooth'],[2,.026,'triangle'],[3,.018,'sawtooth']]){const o=a.createOscillator(),amp=a.createGain();o.type=type;amp.gain.value=g;o.connect(amp);amp.connect(low);o.start();this.osc.push({o,m});}const size=a.sampleRate*2,buffer=a.createBuffer(1,size,a.sampleRate),d=buffer.getChannelData(0);let last=0;for(let i=0;i<size;i++){last=.95*last+.05*(Math.random()*2-1);d[i]=last;}const source=a.createBufferSource();source.buffer=buffer;source.loop=true;this.noise=a.createGain();this.noise.gain.value=0;source.connect(this.noise);this.noise.connect(master);source.start();this.source=source;}
+ update(state,driving){if(!this.context)return;const t=this.context.currentTime,rpm=Math.max(850,state[8]);for(const {o,m}of this.osc)o.frequency.setTargetAtTime(rpm/60*3*m,t,.04);this.master.gain.setTargetAtTime(this.muted||!driving?0:.32+state[21]*.55,t,.1);this.noise.gain.setTargetAtTime(Math.min(.4,state[42]*.004),t,.1);}
+ toggle(){this.muted=!this.muted;return this.muted;}
+ dispose(){this.context?.close();this.context=null;}
+}

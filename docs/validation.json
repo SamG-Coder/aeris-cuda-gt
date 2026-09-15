@@ -1,0 +1,292 @@
+{
+  "generatedAtUtc": "2026-09-15T11:09:45.216927+00:00",
+  "project": "AERIS R / CUDA Grand Tour",
+  "version": "1.0.0",
+  "environment": "Native Dawn / SwiftShader software Vulkan, not a physical GPU benchmark",
+  "runs": [
+    {
+      "stage": "unit",
+      "exitCode": 0,
+      "elapsedWallSeconds": 0.72,
+      "error": null,
+      "log": "unit-test.log"
+    },
+    {
+      "stage": "compile",
+      "exitCode": 0,
+      "elapsedWallSeconds": 0.57,
+      "error": null,
+      "log": "compile-test.log"
+    },
+    {
+      "stage": "gpu",
+      "exitCode": 1,
+      "elapsedWallSeconds": 0.16,
+      "error": null,
+      "log": "gpu-test.log"
+    },
+    {
+      "stage": "render",
+      "exitCode": 1,
+      "elapsedWallSeconds": 15.36,
+      "error": null,
+      "log": "render-test.log"
+    },
+    {
+      "stage": "ui",
+      "exitCode": 1,
+      "elapsedWallSeconds": 1.96,
+      "error": null,
+      "log": "ui-test.log",
+      "checks": 52,
+      "passed": 48,
+      "failedChecks": [
+        "1440 select ignores driving",
+        "1024 select ignores driving",
+        "390 select ignores driving",
+        "844 select ignores driving"
+      ]
+    },
+    {
+      "stage": "server",
+      "exitCode": 0,
+      "elapsedWallSeconds": 0.32,
+      "error": null,
+      "log": "server-test.log"
+    }
+  ],
+  "sourceSHA256": {
+    "kernels/car.cu": "2c62f713cde58ee9b045e9d67dce9004ac76e5501695e24a55848614e413a968",
+    "kernels/vehicle.cu": "b82f7968712e0289c23428fcf74e4d3f40a51717965e109d1c68fe5a34ad484f",
+    "src/track.js": "53b813fb5f5a3395d4fd00606452dbaa03abf410c219a4182cf600957613fda7",
+    "src/stage.js": "15534eb5d8e3e14c0e2dcacb8e9e3df90e5fa654f560952e2807dec108199b99",
+    "src/audio.js": "98d31819c04bc0e0a115d5bdcd1244ee9d8e569ef8ca0db0c58b8e3ee6a68350",
+    "src/input.js": "119bc6c8b0da927985acd448071a5e237badb0cfe7aa392115f0c57ec187291f",
+    "src/car.js": "77f8cd684d71e8630907ba8582b817131f9dd81cfec592ed5febb8a1d0110461",
+    "src/simulation.js": "989dd7b42e1a36eb935fbf11756bfeaf269c407b69a1ee0638639dad20b64fd2",
+    "src/environment.js": "0bcf5f6457ba0f2c9fd3bb4f6f2f14b6530463c1d23520912aa9977930e090b9",
+    "src/app.js": "1597076d6fd485b51c42b40d2cdb075f8f8b042ff063edc13798757bb1835439",
+    "src/diagnostics.js": "9aaa98a1932075c20ec74233618ad421f2b9d91951d95aa76be0a3ae9440ea5f"
+  },
+  "limits": [
+    "No physical-GPU FPS measurement",
+    "No complete live browser-WebGPU driving playthrough",
+    "Browser layout/input checks use locally injected HTML and real keyboard events",
+    "Reduced planar vehicle dynamics; no crash deformation, full suspension contact or open-world streaming",
+    "No Forza fidelity or photographically indistinguishable output claim"
+  ],
+  "ui-validation": {
+    "kind": "Chromium local HTML/CSS injection and real keyboard events. No HTTP app navigation or WebGPU rendering.",
+    "passed": 48,
+    "checks": [
+      {
+        "name": "1440 title",
+        "passed": true
+      },
+      {
+        "name": "1440 title button",
+        "passed": true
+      },
+      {
+        "name": "1440 no horizontal overflow",
+        "passed": true
+      },
+      {
+        "name": "1440 real W down",
+        "passed": true
+      },
+      {
+        "name": "1440 W release",
+        "passed": true
+      },
+      {
+        "name": "1440 left",
+        "passed": true
+      },
+      {
+        "name": "1440 handbrake",
+        "passed": true
+      },
+      {
+        "name": "1440 blur clears",
+        "passed": true
+      },
+      {
+        "name": "1440 select ignores driving",
+        "passed": false
+      },
+      {
+        "name": "1440 controls fit",
+        "passed": true
+      },
+      {
+        "name": "1440 escape closes disabled menu",
+        "passed": true
+      },
+      {
+        "name": "1440 touch input",
+        "passed": true
+      },
+      {
+        "name": "1440 input errors",
+        "passed": true
+      },
+      {
+        "name": "1024 title",
+        "passed": true
+      },
+      {
+        "name": "1024 title button",
+        "passed": true
+      },
+      {
+        "name": "1024 no horizontal overflow",
+        "passed": true
+      },
+      {
+        "name": "1024 real W down",
+        "passed": true
+      },
+      {
+        "name": "1024 W release",
+        "passed": true
+      },
+      {
+        "name": "1024 left",
+        "passed": true
+      },
+      {
+        "name": "1024 handbrake",
+        "passed": true
+      },
+      {
+        "name": "1024 blur clears",
+        "passed": true
+      },
+      {
+        "name": "1024 select ignores driving",
+        "passed": false
+      },
+      {
+        "name": "1024 controls fit",
+        "passed": true
+      },
+      {
+        "name": "1024 escape closes disabled menu",
+        "passed": true
+      },
+      {
+        "name": "1024 touch input",
+        "passed": true
+      },
+      {
+        "name": "1024 input errors",
+        "passed": true
+      },
+      {
+        "name": "390 title",
+        "passed": true
+      },
+      {
+        "name": "390 title button",
+        "passed": true
+      },
+      {
+        "name": "390 no horizontal overflow",
+        "passed": true
+      },
+      {
+        "name": "390 real W down",
+        "passed": true
+      },
+      {
+        "name": "390 W release",
+        "passed": true
+      },
+      {
+        "name": "390 left",
+        "passed": true
+      },
+      {
+        "name": "390 handbrake",
+        "passed": true
+      },
+      {
+        "name": "390 blur clears",
+        "passed": true
+      },
+      {
+        "name": "390 select ignores driving",
+        "passed": false
+      },
+      {
+        "name": "390 controls fit",
+        "passed": true
+      },
+      {
+        "name": "390 escape closes disabled menu",
+        "passed": true
+      },
+      {
+        "name": "390 touch input",
+        "passed": true
+      },
+      {
+        "name": "390 input errors",
+        "passed": true
+      },
+      {
+        "name": "844 title",
+        "passed": true
+      },
+      {
+        "name": "844 title button",
+        "passed": true
+      },
+      {
+        "name": "844 no horizontal overflow",
+        "passed": true
+      },
+      {
+        "name": "844 real W down",
+        "passed": true
+      },
+      {
+        "name": "844 W release",
+        "passed": true
+      },
+      {
+        "name": "844 left",
+        "passed": true
+      },
+      {
+        "name": "844 handbrake",
+        "passed": true
+      },
+      {
+        "name": "844 blur clears",
+        "passed": true
+      },
+      {
+        "name": "844 select ignores driving",
+        "passed": false
+      },
+      {
+        "name": "844 controls fit",
+        "passed": true
+      },
+      {
+        "name": "844 escape closes disabled menu",
+        "passed": true
+      },
+      {
+        "name": "844 touch input",
+        "passed": true
+      },
+      {
+        "name": "844 input errors",
+        "passed": true
+      }
+    ]
+  }
+}

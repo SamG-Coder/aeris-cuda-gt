@@ -1,0 +1,26 @@
+[
+  {
+    "command": "npm test",
+    "started": "2026-09-15T11:09:45.604810+00:00",
+    "exitCode": 0,
+    "log": "ps\n  ---\n  duration_ms: 0.492811\n  type: 'test'\n  ...\n# Subtest: WASD and arrows map into correct local axes\nok 19 - WASD and arrows map into correct local axes\n  ---\n  duration_ms: 0.314363\n  type: 'test'\n  ...\n# Subtest: Held key repeat recovers after clear\nok 20 - Held key repeat recovers after clear\n  ---\n  duration_ms: 0.132369\n  type: 'test'\n  ...\n# Subtest: Missing physical key code falls back to letter\nok 21 - Missing physical key code falls back to letter\n  ---\n  duration_ms: 0.128103\n  type: 'test'\n  ...\n# Subtest: Typing in controls does not drive\nok 22 - Typing in controls does not drive\n  ---\n  duration_ms: 0.093621\n  type: 'test'\n  ...\n# Subtest: Blur and disabling clear vehicle controls\nok 23 - Blur and disabling clear vehicle controls\n  ---\n  duration_ms: 0.097847\n  type: 'test'\n  ...\n# Subtest: Camera repeat does not retrigger\nok 24 - Camera repeat does not retrigger\n  ---\n  duration_ms: 0.161563\n  type: 'test'\n  ...\n# Subtest: Touch pointer cancellation releases controls\nok 25 - Touch pointer cancellation releases controls\n  ---\n  duration_ms: 0.101993\n  type: 'test'\n  ...\n# Subtest: Gamepad triggers, steering and handbrake\nok 26 - Gamepad triggers, steering and handbrake\n  ---\n  duration_ms: 0.157658\n  type: 'test'\n  ...\n# Subtest: Manual shift consumed once\nok 27 - Manual shift consumed once\n  ---\n  duration_ms: 0.098348\n  type: 'test'\n  ...\n# Subtest: Cleanup removes window listeners\nok 28 - Cleanup removes window listeners\n  ---\n  duration_ms: 0.10687\n  type: 'test'\n  ...\n# Subtest: CPU CUDA oracle generates the CAD descriptor count\nok 29 - CPU CUDA oracle generates the CAD descriptor count\n  ---\n  duration_ms: 112.572296\n  type: 'test'\n  ...\n1..29\n# tests 29\n# suites 0\n# pass 29\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 600.512171\n"
+  },
+  {
+    "command": "npm run compile",
+    "started": "2026-09-15T11:09:46.362668+00:00",
+    "exitCode": 0,
+    "log": "\n> aeris-cuda-gt@1.0.0 compile\n> node scripts/compile.mjs\n\nPASS describeCar 35347\nPASS sampleCar 26522\nPASS buildCar 11991\nPASS bakeSurface 10546\nPASS resetVehicle 4540\nPASS stepVehicle 8824\nPASS tireForces 7864\nPASS integrateVehicle 10063\nPASS buildPose 6543\nPASS updateEffects 5354\n"
+  },
+  {
+    "command": "npm run test:server",
+    "started": "2026-09-15T11:09:46.870206+00:00",
+    "exitCode": 0,
+    "log": "\n> aeris-cuda-gt@1.0.0 test:server\n> node tests/server.test.mjs\n\nPASS serves /\nPASS serves /src/app.js\nPASS serves /kernels/car.cu\nPASS serves /kernels/vehicle.cu\nPASS serves /vendor/three/build/three.webgpu.js\nPASS serves /vendor/cuda-webshader/src/compiler/compiler.js\n10 server checks passed\n"
+  },
+  {
+    "command": "npm run build",
+    "started": "2026-09-15T11:09:47.182818+00:00",
+    "exitCode": 0,
+    "log": "\n> aeris-cuda-gt@1.0.0 build\n> node scripts/build.mjs\n\nBuilt dist/: self-contained HTTPS static site.\n"
+  }
+]

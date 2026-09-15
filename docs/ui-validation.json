@@ -1,0 +1,214 @@
+{
+  "kind": "Chromium local HTML/CSS injection and real keyboard events. No HTTP app navigation or WebGPU rendering.",
+  "passed": 48,
+  "checks": [
+    {
+      "name": "1440 title",
+      "passed": true
+    },
+    {
+      "name": "1440 title button",
+      "passed": true
+    },
+    {
+      "name": "1440 no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "1440 real W down",
+      "passed": true
+    },
+    {
+      "name": "1440 W release",
+      "passed": true
+    },
+    {
+      "name": "1440 left",
+      "passed": true
+    },
+    {
+      "name": "1440 handbrake",
+      "passed": true
+    },
+    {
+      "name": "1440 blur clears",
+      "passed": true
+    },
+    {
+      "name": "1440 select ignores driving",
+      "passed": false
+    },
+    {
+      "name": "1440 controls fit",
+      "passed": true
+    },
+    {
+      "name": "1440 escape closes disabled menu",
+      "passed": true
+    },
+    {
+      "name": "1440 touch input",
+      "passed": true
+    },
+    {
+      "name": "1440 input errors",
+      "passed": true
+    },
+    {
+      "name": "1024 title",
+      "passed": true
+    },
+    {
+      "name": "1024 title button",
+      "passed": true
+    },
+    {
+      "name": "1024 no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "1024 real W down",
+      "passed": true
+    },
+    {
+      "name": "1024 W release",
+      "passed": true
+    },
+    {
+      "name": "1024 left",
+      "passed": true
+    },
+    {
+      "name": "1024 handbrake",
+      "passed": true
+    },
+    {
+      "name": "1024 blur clears",
+      "passed": true
+    },
+    {
+      "name": "1024 select ignores driving",
+      "passed": false
+    },
+    {
+      "name": "1024 controls fit",
+      "passed": true
+    },
+    {
+      "name": "1024 escape closes disabled menu",
+      "passed": true
+    },
+    {
+      "name": "1024 touch input",
+      "passed": true
+    },
+    {
+      "name": "1024 input errors",
+      "passed": true
+    },
+    {
+      "name": "390 title",
+      "passed": true
+    },
+    {
+      "name": "390 title button",
+      "passed": true
+    },
+    {
+      "name": "390 no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "390 real W down",
+      "passed": true
+    },
+    {
+      "name": "390 W release",
+      "passed": true
+    },
+    {
+      "name": "390 left",
+      "passed": true
+    },
+    {
+      "name": "390 handbrake",
+      "passed": true
+    },
+    {
+      "name": "390 blur clears",
+      "passed": true
+    },
+    {
+      "name": "390 select ignores driving",
+      "passed": false
+    },
+    {
+      "name": "390 controls fit",
+      "passed": true
+    },
+    {
+      "name": "390 escape closes disabled menu",
+      "passed": true
+    },
+    {
+      "name": "390 touch input",
+      "passed": true
+    },
+    {
+      "name": "390 input errors",
+      "passed": true
+    },
+    {
+      "name": "844 title",
+      "passed": true
+    },
+    {
+      "name": "844 title button",
+      "passed": true
+    },
+    {
+      "name": "844 no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "844 real W down",
+      "passed": true
+    },
+    {
+      "name": "844 W release",
+      "passed": true
+    },
+    {
+      "name": "844 left",
+      "passed": true
+    },
+    {
+      "name": "844 handbrake",
+      "passed": true
+    },
+    {
+      "name": "844 blur clears",
+      "passed": true
+    },
+    {
+      "name": "844 select ignores driving",
+      "passed": false
+    },
+    {
+      "name": "844 controls fit",
+      "passed": true
+    },
+    {
+      "name": "844 escape closes disabled menu",
+      "passed": true
+    },
+    {
+      "name": "844 touch input",
+      "passed": true
+    },
+    {
+      "name": "844 input errors",
+      "passed": true
+    }
+  ]
+}

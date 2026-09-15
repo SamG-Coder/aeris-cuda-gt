@@ -1,0 +1,52 @@
+[
+  {
+    "stage": "unit",
+    "exitCode": 0,
+    "elapsedWallSeconds": 0.72,
+    "error": null,
+    "log": "unit-test.log"
+  },
+  {
+    "stage": "compile",
+    "exitCode": 0,
+    "elapsedWallSeconds": 0.57,
+    "error": null,
+    "log": "compile-test.log"
+  },
+  {
+    "stage": "gpu",
+    "exitCode": 1,
+    "elapsedWallSeconds": 0.16,
+    "error": null,
+    "log": "gpu-test.log"
+  },
+  {
+    "stage": "render",
+    "exitCode": 1,
+    "elapsedWallSeconds": 15.36,
+    "error": null,
+    "log": "render-test.log"
+  },
+  {
+    "stage": "ui",
+    "exitCode": 1,
+    "elapsedWallSeconds": 1.96,
+    "error": null,
+    "log": "ui-test.log",
+    "checks": 52,
+    "passed": 48,
+    "failedChecks": [
+      "1440 select ignores driving",
+      "1024 select ignores driving",
+      "390 select ignores driving",
+      "844 select ignores driving"
+    ]
+  },
+  {
+    "stage": "server",
+    "exitCode": 0,
+    "elapsedWallSeconds": 0.32,
+    "error": null,
+    "log": "server-test.log"
+  }
+]
